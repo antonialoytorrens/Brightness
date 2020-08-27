@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 # -*- coding:utf-8 -*-
 
 import wx
@@ -14,14 +14,17 @@ class BrightnessController(wx.Frame):
         """Detects available displays"""
         connected_devs = []
 
-        xrandr_output = subprocess.check_output('xrandr -q', shell=True)
+        # Only one display at the moment, no xrandr
+        """xrandr_output = subprocess.check_output('xrandr -q', shell=True)
 
         lines = xrandr_output.split('\n')
         for line in lines:
             words = line.split(' ')
             for word in words:
                 if word == 'connected':
-                    connected_devs.append(words[0])
+                    connected_devs.append(words[0])"""
+        
+        connected_devs.append(1)
         return connected_devs
 
     def __init__(self, parent, title):
@@ -33,52 +36,51 @@ class BrightnessController(wx.Frame):
         self.no_of_detected_device = len(self.detected_devices)
 
         if self.no_of_detected_device == 1 or \
-        self.no_of_detected_device == 2 or \
-        self.no_of_detected_device == 3 or self.no_of_detected_device == 4:
+                self.no_of_detected_device == 2 or \
+                self.no_of_detected_device == 3 or self.no_of_detected_device == 4:
             if self.debug_true():
-                print 'Found one'
+                print('Found one')
             self.primary_name = self.detected_devices[0]
         else:
             self.primary_name = 'Not found'
-        if self.no_of_detected_device == 2 or \
-        self.no_of_detected_device == 3 or self.no_of_detected_device == 4:
+        """if self.no_of_detected_device == 2 or self.no_of_detected_device == 3 or self.no_of_detected_device == 4:
             if self.debug_true():
-                print 'Found two'
+                print('Found two')
             self.secondary_name = self.detected_devices[1]
         else:
             self.secondary_name = 'Not found'
         if self.no_of_detected_device == 3 or self.no_of_detected_device == 4:
             if self.debug_true():
-                print 'Found three'
+                print('Found three')
             self.third_name = self.detected_devices[2]
         else:
             self.third_name = 'Not found'
         if self.no_of_detected_device == 4:
             if self.debug_true():
-                print 'Found four'
+                print('Found four')
             self.fourth_name = self.detected_devices[3]
         else:
-            self.fourth_name = 'Not found'
+            self.fourth_name = 'Not found'"""
 
         self.array_value = 0.00
         self.cmds_primary_display = []
-        self.cmds_secondary_display = []
-        self.cmds_third_display = []
-        self.cmds_fourth_display = []
+        #self.cmds_secondary_display = []
+        #self.cmds_third_display = []
+        #self.cmds_fourth_display = []
 
-        for i in xrange(0, 101):
-            cmd_primary_display = "xrandr --output \
-                %s --brightness %s" % (self.primary_name, self.array_value)
-            cmd_secondary_display = "xrandr --output \
+        for i in range(0, 101):
+            cmd_primary_display = "xbacklight -set %s " % (self.array_value*100)
+            print(cmd_primary_display)
+            """cmd_secondary_display = "xrandr --output \
                 %s --brightness %s" % (self.secondary_name, self.array_value)
             cmd_third_display = "xrandr --output \
                 %s --brightness %s" % (self.third_name, self.array_value)
             cmd_fourth_display = "xrandr --output \
-                %s --brightness %s" % (self.fourth_name, self.array_value)
+                %s --brightness %s" % (self.fourth_name, self.array_value)"""
             self.cmds_primary_display.append(cmd_primary_display)
-            self.cmds_secondary_display.append(cmd_secondary_display)
-            self.cmds_third_display.append(cmd_third_display)
-            self.cmds_fourth_display.append(cmd_fourth_display)
+            #self.cmds_secondary_display.append(cmd_secondary_display)
+            #self.cmds_third_display.append(cmd_third_display)
+            #self.cmds_fourth_display.append(cmd_fourth_display)
             self.array_value += 0.01
 
         self.InitUI()
@@ -123,7 +125,7 @@ class BrightnessController(wx.Frame):
 
         self.hbox2 = wx.BoxSizer(wx.HORIZONTAL)
 
-        if self.no_of_detected_device == 2 or self.no_of_detected_device == 3 or self.no_of_detected_device == 4:
+        """if self.no_of_detected_device == 2 or self.no_of_detected_device == 3 or self.no_of_detected_device == 4:
             st2 = wx.StaticText(panel, label='   Secondary')
             self.hbox2.Add(st2, flag=wx.RIGHT | wx.TOP, border=3)
             slider2 = wx.Slider(
@@ -188,20 +190,20 @@ class BrightnessController(wx.Frame):
         else:
             st4 = wx.StaticText(panel, label='   Fourth             Not found')
             self.hbox4.Add(st4, flag=wx.RIGHT | wx.TOP, border=3)
-        self.vbox.Add(self.hbox4)
+        self.vbox.Add(self.hbox4)"""
 
         panel.SetSizer(self.vbox)
 
     def primary_scroll(self, event):
-        """Controls the brightness of primary monitor"""
+        #Controls the brightness of primary monitor
         obj = event.GetEventObject()
         val = obj.GetValue()
         self.primary_status.SetLabel(str(val))
 
         system(self.cmds_primary_display[val])
 
-    def secondary_scroll(self, event):
-        """Controls the brightness of secondary monitor"""
+    """def secondary_scroll(self, event):
+        #Controls the brightness of secondary monitor
         obj = event.GetEventObject()
         val = obj.GetValue()
         self.secondary_status.SetLabel(str(val))
@@ -209,7 +211,7 @@ class BrightnessController(wx.Frame):
         system(self.cmds_secondary_display[val])
 
     def third_scroll(self, event):
-        """Controls the brightness of third monitor"""
+        #Controls the brightness of third monitor
         obj = event.GetEventObject()
         val = obj.GetValue()
         self.third_status.SetLabel(str(val))
@@ -217,12 +219,12 @@ class BrightnessController(wx.Frame):
         system(self.cmds_third_display[val])
 
     def fourth_scroll(self, event):
-        """Controls the brightness of fourth monitor"""
+        #Controls the brightness of fourth monitor
         obj = event.GetEventObject()
         val = obj.GetValue()
         self.fourth_status.SetLabel(str(val))
 
-        system(self.cmds_fourth_display[val])
+        system(self.cmds_fourth_display[val])"""
 
     def OnAboutBox(self, event):
 
