@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 
 import wx
+import wx.adv
 import subprocess
 from os import system
 
@@ -12,17 +13,8 @@ class BrightnessController(wx.Frame):
 
     def detect_display_devices(self):
         """Detects available displays"""
+        """ Always connected display """
         connected_devs = []
-
-        # Only one display at the moment, no xrandr
-        """xrandr_output = subprocess.check_output('xrandr -q', shell=True)
-
-        lines = xrandr_output.split('\n')
-        for line in lines:
-            words = line.split(' ')
-            for word in words:
-                if word == 'connected':
-                    connected_devs.append(words[0])"""
         
         connected_devs.append(1)
         return connected_devs
@@ -43,44 +35,13 @@ class BrightnessController(wx.Frame):
             self.primary_name = self.detected_devices[0]
         else:
             self.primary_name = 'Not found'
-        """if self.no_of_detected_device == 2 or self.no_of_detected_device == 3 or self.no_of_detected_device == 4:
-            if self.debug_true():
-                print('Found two')
-            self.secondary_name = self.detected_devices[1]
-        else:
-            self.secondary_name = 'Not found'
-        if self.no_of_detected_device == 3 or self.no_of_detected_device == 4:
-            if self.debug_true():
-                print('Found three')
-            self.third_name = self.detected_devices[2]
-        else:
-            self.third_name = 'Not found'
-        if self.no_of_detected_device == 4:
-            if self.debug_true():
-                print('Found four')
-            self.fourth_name = self.detected_devices[3]
-        else:
-            self.fourth_name = 'Not found'"""
 
         self.array_value = 0.00
         self.cmds_primary_display = []
-        #self.cmds_secondary_display = []
-        #self.cmds_third_display = []
-        #self.cmds_fourth_display = []
 
         for i in range(0, 101):
             cmd_primary_display = "xbacklight -set %s " % (self.array_value*100)
-            print(cmd_primary_display)
-            """cmd_secondary_display = "xrandr --output \
-                %s --brightness %s" % (self.secondary_name, self.array_value)
-            cmd_third_display = "xrandr --output \
-                %s --brightness %s" % (self.third_name, self.array_value)
-            cmd_fourth_display = "xrandr --output \
-                %s --brightness %s" % (self.fourth_name, self.array_value)"""
             self.cmds_primary_display.append(cmd_primary_display)
-            #self.cmds_secondary_display.append(cmd_secondary_display)
-            #self.cmds_third_display.append(cmd_third_display)
-            #self.cmds_fourth_display.append(cmd_fourth_display)
             self.array_value += 0.01
 
         self.InitUI()
@@ -125,73 +86,6 @@ class BrightnessController(wx.Frame):
 
         self.hbox2 = wx.BoxSizer(wx.HORIZONTAL)
 
-        """if self.no_of_detected_device == 2 or self.no_of_detected_device == 3 or self.no_of_detected_device == 4:
-            st2 = wx.StaticText(panel, label='   Secondary')
-            self.hbox2.Add(st2, flag=wx.RIGHT | wx.TOP, border=3)
-            slider2 = wx.Slider(
-                panel,
-                value=100,
-                minValue=1,
-                maxValue=100,
-                size=(200, -1),
-                style=wx.SL_HORIZONTAL)
-            self.hbox2.Add(slider2, flag=wx.LEFT, border=7)
-            self.secondary_status = wx.StaticText(panel, label='100')
-            self.hbox2.Add(
-                self.secondary_status, flag=wx.TOP | wx.LEFT, border=3)
-
-            slider2.Bind(wx.EVT_SCROLL, self.secondary_scroll)
-        else:
-            st2 = wx.StaticText(panel, label='   Secondary          Not found')
-            self.hbox2.Add(st2, flag=wx.RIGHT | wx.TOP, border=3)
-
-        self.vbox.Add(self.hbox2)
-
-        self.hbox3 = wx.BoxSizer(wx.HORIZONTAL)
-
-        if self.no_of_detected_device == 3 or self.no_of_detected_device == 4:
-            st3 = wx.StaticText(panel, label='   Third')
-            self.hbox3.Add(st3, flag=wx.RIGHT | wx.TOP, border=3)
-            slider3 = wx.Slider(
-                panel,
-                value=100,
-                minValue=1,
-                maxValue=100,
-                size=(200, -1),
-                style=wx.SL_HORIZONTAL)
-            self.hbox3.Add(slider3, flag=wx.LEFT, border=42)
-            self.third_status = wx.StaticText(panel, label='100')
-            self.hbox3.Add(self.third_status, flag=wx.TOP | wx.LEFT, border=3)
-
-            slider3.Bind(wx.EVT_SCROLL, self.third_scroll)
-        else:
-            st3 = wx.StaticText(panel, label='   Third              Not found')
-            self.hbox3.Add(st3, flag=wx.RIGHT | wx.TOP, border=3)
-
-        self.vbox.Add(self.hbox3)
-
-        self.hbox4 = wx.BoxSizer(wx.HORIZONTAL)
-
-        if self.no_of_detected_device == 4:
-            st4 = wx.StaticText(panel, label='   Fourth')
-            self.hbox4.Add(st4, flag=wx.RIGHT | wx.TOP, border=3)
-            slider4 = wx.Slider(
-                panel,
-                value=100,
-                minValue=1,
-                maxValue=100,
-                size=(200, -1),
-                style=wx.SL_HORIZONTAL)
-            self.hbox4.Add(slider4, flag=wx.LEFT, border=34)
-            self.fourth_status = wx.StaticText(panel, label='100')
-            self.hbox4.Add(self.fourth_status, flag=wx.TOP | wx.LEFT, border=3)
-
-            slider4.Bind(wx.EVT_SCROLL, self.fourth_scroll)
-        else:
-            st4 = wx.StaticText(panel, label='   Fourth             Not found')
-            self.hbox4.Add(st4, flag=wx.RIGHT | wx.TOP, border=3)
-        self.vbox.Add(self.hbox4)"""
-
         panel.SetSizer(self.vbox)
 
     def primary_scroll(self, event):
@@ -202,40 +96,10 @@ class BrightnessController(wx.Frame):
 
         system(self.cmds_primary_display[val])
 
-    """def secondary_scroll(self, event):
-        #Controls the brightness of secondary monitor
-        obj = event.GetEventObject()
-        val = obj.GetValue()
-        self.secondary_status.SetLabel(str(val))
-
-        system(self.cmds_secondary_display[val])
-
-    def third_scroll(self, event):
-        #Controls the brightness of third monitor
-        obj = event.GetEventObject()
-        val = obj.GetValue()
-        self.third_status.SetLabel(str(val))
-
-        system(self.cmds_third_display[val])
-
-    def fourth_scroll(self, event):
-        #Controls the brightness of fourth monitor
-        obj = event.GetEventObject()
-        val = obj.GetValue()
-        self.fourth_status.SetLabel(str(val))
-
-        system(self.cmds_fourth_display[val])"""
-
     def OnAboutBox(self, event):
 
-        description = """Brightness Controller allows you to control Brightness of your Primary and Secondary Display in Linux. It is a software based dimmer.
-
-It allows you to control the brightness of your monitor to a better extent. For example, laptop's monitor brightness can be controlled using hardware keys at discrete values, such as 20%, 40%, 60%, ... 100%. Brightness Controller allows you to change the brightness to a better degree of control, ranging from 1% to 100%! It should be mentioned that it changes the present brightness value set via hardware control of your monitor. For example, if you set your Monitor's brightness to 50% using hardware buttons, then that will be the 100% value in Brightness controller.
-
-Want to show appreciation for what we have done? Tell your friends about it.
-
-Have troubles? Report an issue.
-"""
+        description = """ This is an unofficial and modified version of Brightness Controller. The original code is distributed by Amit Seal Ami, and this one is distributed by Antoni Aloy Torrens. 
+        It uses xbacklight from acpilight to control brightness instead of xrandr (because sometimes it cannot detect screen). Modified version located here: """
 
         licence = """Brightness Controller is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -250,25 +114,26 @@ received a copy of the GNU General Public License along with Brightness Controll
 if not, see http://www.gnu.org/licenses/gpl.html or write to
 the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA"""
 
-        info = wx.AboutDialogInfo()
+        info = wx.adv.AboutDialogInfo()
 
-        info.SetName('Brightness Controller')
-        info.SetVersion('1.2.3')
+        info.SetName('Brightness Controller MOD')
+        info.SetVersion('1.0.0')
         info.SetDescription(description)
-        info.SetCopyright('(C) 2013 - 2017 Amit Seal Ami')
-        info.SetWebSite('http://lordamit.github.io/Brightness/')
+        info.SetWebSite('https://github.com/antonialoytorrens/Brightness')
+        info.SetCopyright('(C) 2013 - 2017 Amit Seal Ami, (C) 2020 - 2020 Antoni Aloy Torrens')
         info.SetLicence(licence)
         info.AddDeveloper('Amit Seal Ami <amitseal@outlook.com>')
+        info.AddDeveloper('Antoni Aloy Torrens')
         info.AddDeveloper('G.S. <xseektruthx@gmail.com>')
         info.AddDocWriter('Amit Seal Ami <amitseal@outlook.com>')
         info.AddDocWriter('Zlatan Vasović <zdroid@pulsir.eu>')
         info.AddDocWriter('Archisman Panigrahi <apandada1@gmail.com>')
         info.AddArtist('Archisman Panigrahi <apandada1@gmail.com>')
 
-        wx.AboutBox(info)
+        wx.adv.AboutBox(info)
 
 
 if __name__ == '__main__':
     app = wx.App()
-    BrightnessController(None, title='Brightness Controller')
+    BrightnessController(None, title='Brightness Controller MOD')
     app.MainLoop()
